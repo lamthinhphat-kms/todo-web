@@ -1,9 +1,9 @@
-import React, { PropsWithChildren } from "react";
-import { ITask } from "../models/ITask";
+import React, { PropsWithChildren, useEffect, useState } from "react";
 import "./styles.css";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import { MdDone } from "react-icons/md";
-import { store } from "../zustand/store";
+import { store } from "../../../zustand/store";
+import { ITask } from "../../../models/ITask";
 
 type SingleTaskProp = PropsWithChildren<{
   task: ITask;
@@ -12,11 +12,26 @@ type SingleTaskProp = PropsWithChildren<{
 function SingleTask(props: SingleTaskProp) {
   const editTask = store((store) => store.editTask);
   const removeTask = store((store) => store.removeTask);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [text, setText] = useState(props.task.title);
+
+  useEffect(() => {
+    editTask({ ...props.task, title: text });
+  }, [isEdit]);
 
   return (
     <form className="task_single">
       <div className="container_task--text">
-        {props.task.isCompleted ? (
+        {isEdit ? (
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            style={{
+              width: "95%",
+              fontSize: "20px",
+            }}
+          />
+        ) : props.task.isCompleted ? (
           <s className="task_single--text">{props.task.title}</s>
         ) : (
           <span className="task_single--text">{props.task.title}</span>
@@ -24,7 +39,7 @@ function SingleTask(props: SingleTaskProp) {
       </div>
 
       <div>
-        <span className="icon">
+        <span className="icon" onClick={() => setIsEdit(!isEdit)}>
           <AiFillEdit />
         </span>
         <span

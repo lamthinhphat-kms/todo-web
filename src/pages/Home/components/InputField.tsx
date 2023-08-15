@@ -1,5 +1,6 @@
-import React, { PropsWithChildren, useRef } from "react";
+import React, { PropsWithChildren, useContext, useRef } from "react";
 import "./styles.css";
+import { AuthContext } from "../../../context/AuthContext";
 
 type inputProp = PropsWithChildren<{
   task: string;
@@ -8,6 +9,7 @@ type inputProp = PropsWithChildren<{
 }>;
 
 function InputField(props: inputProp) {
+  const { logout } = useContext(AuthContext);
   const inputRef = useRef<HTMLInputElement>(null);
   return (
     <form
@@ -15,6 +17,7 @@ function InputField(props: inputProp) {
       onSubmit={(e) => {
         props.handleAdd(e);
         inputRef.current?.blur();
+        // logout();
       }}
     >
       <input

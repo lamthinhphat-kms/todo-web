@@ -1,0 +1,37 @@
+
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+.form_input{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0px;
+    width: 50%;
+
+}
+
+.input_text, select {
+    padding: 12px 20px;
+    margin: 10px 0px;
+    border-radius: 15px;
+    border: none;
+    border: 1px solid #ccc;
+}
+
+.login_btn {
+    color: white;
+    background-color: blue;
+    width: 30%;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 15px;
+    border: none;
+    font-size: 20px;
+    margin: 8px;
+}

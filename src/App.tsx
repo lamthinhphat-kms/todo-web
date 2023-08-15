@@ -1,33 +1,29 @@
-import React, { useState } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
-import InputField from "./components/InputField";
-import { ITask } from "./models/ITask";
-import { v4 as uuidv4 } from "uuid";
-import InputList from "./components/InputList";
-import { store } from "./zustand/store";
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext";
+import HomeScreen from "./pages/Home/Home";
+import LoginScreen from "./pages/Login/Login";
 
 function App() {
-  const [task, setTask] = useState<string>("");
-  const [taskList, setTaskList] = useState<ITask[]>([]);
-  const addTask = store((store) => store.addTask);
-
-  const handleAddTask = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newTask: ITask = {
-      id: uuidv4(),
-      title: task,
-      isCompleted: false,
-    };
-    addTask(newTask);
-    setTask("");
-  };
-
+  const { userToken, isLoading } = useContext(AuthContext);
   return (
-    <div className="App">
-      <span className="heading">Task</span>
-      <InputField task={task} setTaskList={setTask} handleAdd={handleAddTask} />
-      <InputList />
-    </div>
+    <>
+      <Routes>
+        {userToken ? (
+          <>
+            <Route path="/login" element={<Navigate to="/" />} />
+            <Route path="/" element={<HomeScreen />} />
+          </>
+        ) : (
+          <>
+            <Route path="/login" element={<LoginScreen />} />
+
+            <Route path="/*" element={<Navigate to="/login" />} />
+          </>
+        )}
+      </Routes>
+    </>
   );
 }
 

@@ -1,8 +1,7 @@
 import React, { PropsWithChildren } from "react";
 import "./styles.css";
-import { ITask } from "../models/ITask";
 import SingleTask from "./SingleTask";
-import { store } from "../zustand/store";
+import { store } from "../../../zustand/store";
 
 type InputListProps = PropsWithChildren<{}>;
 
