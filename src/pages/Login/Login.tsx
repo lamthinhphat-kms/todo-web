@@ -1,9 +1,9 @@
-import React, { useContext, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import "./styles.css";
 import { useMutation } from "react-query";
 import AuthService from "../../api/auth";
+import { useGoogleLogin } from "@react-oauth/google";
 
 function LoginScreen() {
   const { setAuthenticated } = useContext(AuthContext);
@@ -14,6 +14,20 @@ function LoginScreen() {
     onSuccess: (data) => {
       setAuthenticated(data.access_token, data.refresh_token);
     },
+  });
+
+  const loginWithGoogleMutation = useMutation({
+    mutationFn: AuthService.loginWithGoogle,
+    onSuccess: (data) => {
+      setAuthenticated(data.access_token, data.refresh_token);
+    },
+  });
+
+  const loginGoogle = useGoogleLogin({
+    onSuccess: async (token) => {
+      loginWithGoogleMutation.mutate(token.code);
+    },
+    flow: "auth-code",
   });
 
   return (
@@ -47,6 +61,23 @@ function LoginScreen() {
       <button className="login_btn" type="submit" form="form-input">
         Login
       </button>
+      <button
+        className="login_btn"
+        onClick={(e) => {
+          e.preventDefault();
+          loginGoogle();
+        }}
+      >
+        Login with google
+      </button>
+      {/* <GoogleLogin
+        onSuccess={(credentialResponse) => {
+          console.log(credentialResponse);
+        }}
+        onError={() => {
+          console.log("error login google");
+        }}
+      /> */}
     </div>
   );
 }
