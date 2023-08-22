@@ -3,15 +3,19 @@ import { AuthContext } from "../../context/AuthContext";
 import "./styles.css";
 import { useMutation } from "react-query";
 import AuthService from "../../api/auth";
-import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import { store } from "../../zustand/store";
 
 function LoginScreen() {
   const { setAuthenticated } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const setIsLoading = store((store) => store.setIsLoading);
+
   const loginMutation = useMutation({
     mutationFn: AuthService.login,
     onSuccess: (data) => {
+      setIsLoading(false);
       setAuthenticated(data.access_token, data.refresh_token);
     },
   });
@@ -19,7 +23,23 @@ function LoginScreen() {
   const loginWithGoogleMutation = useMutation({
     mutationFn: AuthService.loginWithGoogle,
     onSuccess: (data) => {
+      setIsLoading(false);
+
       setAuthenticated(data.access_token, data.refresh_token);
+    },
+    onError: (error) => {
+      setIsLoading(false);
+    },
+  });
+
+  const sendGoogleCredentialMutation = useMutation({
+    mutationFn: AuthService.loginWithCredential,
+    onSuccess: (data) => {
+      setIsLoading(false);
+      setAuthenticated(data.access_token, data.refresh_token);
+    },
+    onError: (error) => {
+      setIsLoading(false);
     },
   });
 
@@ -28,6 +48,9 @@ function LoginScreen() {
       loginWithGoogleMutation.mutate(token.code);
     },
     flow: "auth-code",
+    onError: (error) => {
+      setIsLoading(false);
+    },
   });
 
   return (
@@ -38,6 +61,7 @@ function LoginScreen() {
         className="form_input"
         onSubmit={(e) => {
           e.preventDefault();
+          setIsLoading(true);
           loginMutation.mutate({
             email: email,
             password: password,
@@ -65,19 +89,27 @@ function LoginScreen() {
         className="login_btn"
         onClick={(e) => {
           e.preventDefault();
+          setIsLoading(true);
+
           loginGoogle();
         }}
       >
         Login with google
       </button>
-      {/* <GoogleLogin
+      <GoogleLogin
+        click_listener={() => {
+          setIsLoading(true);
+        }}
         onSuccess={(credentialResponse) => {
-          console.log(credentialResponse);
+          sendGoogleCredentialMutation.mutate(
+            credentialResponse.credential ?? ""
+          );
         }}
         onError={() => {
+          setIsLoading(false);
           console.log("error login google");
         }}
-      /> */}
+      />
     </div>
   );
 }

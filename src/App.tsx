@@ -4,25 +4,21 @@ import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import HomeScreen from "./pages/Home/Home";
 import LoginScreen from "./pages/Login/Login";
+import { ClipLoader } from "react-spinners";
+import RootRoute from "./routes/RootRoute";
+import { store } from "./zustand/store";
 
 function App() {
-  const { userToken, isLoading } = useContext(AuthContext);
+  const loading = store((store) => store.isLoading);
   return (
     <>
-      <Routes>
-        {userToken ? (
-          <>
-            <Route path="/login" element={<Navigate to="/" />} />
-            <Route path="/" element={<HomeScreen />} />
-          </>
-        ) : (
-          <>
-            <Route path="/login" element={<LoginScreen />} />
+      {loading && (
+        <div className="loading_container">
+          <ClipLoader loading={loading} />
+        </div>
+      )}
 
-            <Route path="/*" element={<Navigate to="/login" />} />
-          </>
-        )}
-      </Routes>
+      <RootRoute />
     </>
   );
 }

@@ -35,3 +35,7 @@
     font-size: 20px;
     margin: 8px;
 }
+
+.login_btn:disabled {
+    background-color: gray;
+}

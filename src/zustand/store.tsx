@@ -5,6 +5,8 @@ import { ITask } from "../models/ITask";
 
 interface TaskState {
   taskList: ITask[];
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
   addTask: (task: ITask) => void;
   editTask: (task: ITask) => void;
   removeTask: (task: ITask) => void;
@@ -13,6 +15,13 @@ interface TaskState {
 export const store = createWithEqualityFn<TaskState>()(
   (set) => ({
     taskList: [],
+    isLoading: false,
+    setIsLoading: (isLoading) =>
+      set(
+        produce((state: TaskState) => {
+          state.isLoading = isLoading;
+        })
+      ),
     addTask: (task) =>
       set(
         produce((state: TaskState) => {

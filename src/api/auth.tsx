@@ -23,9 +23,21 @@ async function loginWithGoogle(token: string) {
   }
 }
 
+async function loginWithCredential(token: string) {
+  try {
+    const response = await axios.post("/auth/google/login/credential", {
+      token,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 const AuthService = {
   login,
   loginWithGoogle,
+  loginWithCredential,
 };
 
 export default AuthService;
