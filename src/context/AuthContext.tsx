@@ -1,4 +1,5 @@
-import { FC, createContext, useState } from "react";
+import { FC, createContext, useEffect, useState } from "react";
+import localStorageUtils from "../utils/LocalStorage";
 export interface Props {
   children: React.ReactNode;
 }
@@ -25,11 +26,30 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     refreshToken: string
   ) => {
     setUserToken(accessToken);
+    localStorageUtils.saveToLocal("access_token", accessToken);
+    // localStorageUtils.saveToLocal("access_token", accessToken);
   };
 
   const logout = async () => {
     setUserToken(undefined);
+    localStorageUtils.removeItemFromLocal("access_token");
   };
+
+  const isLoggedIn = async () => {
+    try {
+      let tokenStorage = localStorageUtils.getFromLocal("access_token");
+      if (tokenStorage) {
+        setUserToken(tokenStorage);
+      }
+    } catch (error) {
+      setUserToken(undefined);
+      localStorageUtils.removeItemFromLocal("access_token");
+    }
+  };
+
+  useEffect(() => {
+    isLoggedIn();
+  }, []);
   return (
     <AuthContext.Provider
       value={{ userToken, isLoading, setAuthenticated, logout }}

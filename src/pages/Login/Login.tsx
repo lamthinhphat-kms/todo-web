@@ -3,7 +3,11 @@ import { AuthContext } from "../../context/AuthContext";
 import "./styles.css";
 import { useMutation } from "react-query";
 import AuthService from "../../api/auth";
-import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import {
+  GoogleLogin,
+  useGoogleLogin,
+  useGoogleOneTapLogin,
+} from "@react-oauth/google";
 import { store } from "../../zustand/store";
 
 function LoginScreen() {
@@ -85,7 +89,7 @@ function LoginScreen() {
       <button className="login_btn" type="submit" form="form-input">
         Login
       </button>
-      <button
+      {/* <button
         className="login_btn"
         onClick={(e) => {
           e.preventDefault();
@@ -95,7 +99,7 @@ function LoginScreen() {
         }}
       >
         Login with google
-      </button>
+      </button> */}
       <GoogleLogin
         click_listener={() => {
           setIsLoading(true);
