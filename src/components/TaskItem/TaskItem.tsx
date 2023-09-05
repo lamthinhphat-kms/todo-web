@@ -16,14 +16,12 @@ type TaskItemProp = PropsWithChildren<{
 
 function TaskItem(props: TaskItemProp) {
   const [editting, setEditting] = useState(false);
-  const [text, setText] = useState(props.task.title);
   const queryClient = useQueryClient();
   let tempText = "";
   const updateTaskMutation = useMutation({
     mutationFn: TaskService.updateTask,
     onSuccess: (data) => {
       queryClient.invalidateQueries(["tasks"], { exact: true });
-      setText(tempText);
     },
   });
 
@@ -35,7 +33,7 @@ function TaskItem(props: TaskItemProp) {
   });
 
   return (
-    <Card className="task-item" key={props.task.id}>
+    <Card className="task-item">
       <Paragraph
         className="text"
         style={{
@@ -44,10 +42,9 @@ function TaskItem(props: TaskItemProp) {
         }}
         editable={{
           icon: <Icon type="xxx" />,
-          text: text,
+          text: props.task.title,
           editing: editting,
           onChange: (newText) => {
-            tempText = newText;
             updateTaskMutation.mutate({
               id: props.task.id,
               title: newText,
@@ -59,7 +56,7 @@ function TaskItem(props: TaskItemProp) {
           },
         }}
       >
-        {text}
+        {props.task.title}
       </Paragraph>
 
       <div>

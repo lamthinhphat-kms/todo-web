@@ -64,7 +64,7 @@ function ApiScreen() {
                 {data!
                   .filter((task, index) => task.isCompleted === false)
                   .map((item, index) => (
-                    <TaskItem task={item} />
+                    <TaskItem key={item.id} task={item} />
                   ))}
               </>
             )}
@@ -77,7 +77,7 @@ function ApiScreen() {
                 {data!
                   .filter((task, index) => task.isCompleted === true)
                   .map((item, index) => (
-                    <TaskItem task={item} />
+                    <TaskItem key={item.id} task={item} />
                   ))}
               </>
             )}
