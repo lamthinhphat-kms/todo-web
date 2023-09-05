@@ -34,10 +34,22 @@ async function loginWithCredential(token: string) {
   }
 }
 
+async function refreshTokenApi(refreshToken: string) {
+  try {
+    const response = await axios.post("/auth/refresh", {
+      refresh_token: refreshToken,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 const AuthService = {
   login,
   loginWithGoogle,
   loginWithCredential,
+  refreshTokenApi,
 };
 
 export default AuthService;

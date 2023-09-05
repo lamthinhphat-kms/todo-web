@@ -101,10 +101,8 @@ function LoginScreen() {
         Login with google
       </button> */}
       <GoogleLogin
-        click_listener={() => {
-          setIsLoading(true);
-        }}
         onSuccess={(credentialResponse) => {
+          setIsLoading(true);
           sendGoogleCredentialMutation.mutate(
             credentialResponse.credential ?? ""
           );

@@ -1,0 +1,25 @@
+.task-item {
+    width: 100%;
+    border-color: black;
+    margin: 8px 0;
+    .ant-card-body {
+        padding: 12px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.text {
+    font-size: 20px;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.icon {
+    margin-left: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
