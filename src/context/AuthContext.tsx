@@ -9,6 +9,7 @@ export interface Props {
 interface AuthContextProps {
   userToken: string | undefined;
   isLoading: boolean;
+  isLoggedIn: () => Promise<void>;
   setAuthenticated: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
 }
@@ -18,6 +19,7 @@ export const AuthContext = createContext<AuthContextProps>({
   isLoading: false,
   setAuthenticated: () => {},
   logout: () => {},
+  isLoggedIn: async () => {},
 });
 
 export const AuthProvider: FC<Props> = ({ children }) => {
@@ -68,7 +70,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
   }, []);
   return (
     <AuthContext.Provider
-      value={{ userToken, isLoading, setAuthenticated, logout }}
+      value={{ userToken, isLoading, setAuthenticated, logout, isLoggedIn }}
     >
       {children}
     </AuthContext.Provider>

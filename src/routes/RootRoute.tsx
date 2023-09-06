@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import HomeScreen from "../pages/Home/Home";
@@ -6,9 +6,23 @@ import LoginScreen from "../pages/Login/Login";
 import ApiScreen from "../pages/Api/ApiScreen";
 import NavBar from "../components/NavBar/NavBar";
 import AboutScreen from "../pages/About/AboutScreen";
+import { ClipLoader } from "react-spinners";
 function RootRoute() {
-  const { userToken } = useContext(AuthContext);
+  const { userToken, isLoggedIn } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    isLoggedIn().then(() => {
+      setIsLoading(false);
+    });
+  }, []);
+  if (isLoading) {
+    return (
+      <div className="loading_container">
+        <ClipLoader loading={isLoading} />
+      </div>
+    );
+  }
   return (
     <>
       <Routes>

@@ -103,6 +103,12 @@ function ApiScreen() {
               <>
                 {taskList!
                   .filter((task, index) => task.isCompleted === false)
+                  .sort((a, b) => {
+                    return (
+                      new Date(a.updatedAt ?? Date.now()).getTime() -
+                      new Date(b.updatedAt ?? Date.now()).getTime()
+                    );
+                  })
                   .map((item, index) => (
                     <TaskItem
                       key={item.id}
@@ -121,6 +127,12 @@ function ApiScreen() {
               <>
                 {taskList!
                   .filter((task, index) => task.isCompleted === true)
+                  .sort((a, b) => {
+                    return (
+                      new Date(a.updatedAt ?? Date.now()).getTime() -
+                      new Date(b.updatedAt ?? Date.now()).getTime()
+                    );
+                  })
                   .map((item, index) => (
                     <TaskItem
                       key={item.id}
