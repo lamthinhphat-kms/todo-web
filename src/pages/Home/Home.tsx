@@ -15,11 +15,15 @@ function HomeScreen() {
   const { updateTaskList } = store((store) => store);
 
   useEffect(() => {
-    const tempList = JSON.parse(
-      localStorageUtils.getFromLocal("taskList") ?? ""
-    );
-    if (tempList.length !== 0) {
-      updateTaskList(tempList);
+    try {
+      const tempList = JSON.parse(
+        localStorageUtils.getFromLocal("taskList") ?? ""
+      );
+      if (tempList.length !== 0) {
+        updateTaskList(tempList);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }, []);
 

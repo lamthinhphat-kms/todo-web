@@ -8,27 +8,41 @@ import { ITask } from "../../models/ITask";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { TaskService } from "../../api/task";
 import Item from "antd/es/list/Item";
+import { Socket } from "socket.io-client";
 const { Text, Link, Paragraph } = Typography;
 
 type TaskItemProp = PropsWithChildren<{
   task: ITask;
+  socket: Socket;
+  userId: number;
 }>;
 
 function TaskItem(props: TaskItemProp) {
+  const { userId, socket } = props;
   const [editting, setEditting] = useState(false);
   const queryClient = useQueryClient();
   let tempText = "";
   const updateTaskMutation = useMutation({
     mutationFn: TaskService.updateTask,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["tasks"], { exact: true });
+      if (userId && socket) {
+        socket.emit("task", {
+          userId: userId,
+        });
+      }
+      // queryClient.invalidateQueries(["tasks"], { exact: true });
     },
   });
 
   const deleteTaskMutation = useMutation({
     mutationFn: TaskService.deleteTask,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["tasks"], { exact: true });
+      if (userId && socket) {
+        socket.emit("task", {
+          userId: userId,
+        });
+      }
+      // queryClient.invalidateQueries(["tasks"], { exact: true });
     },
   });
 
