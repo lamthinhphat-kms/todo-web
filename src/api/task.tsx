@@ -11,11 +11,19 @@ async function getTasks(): Promise<ITask[]> {
   }
 }
 
-async function createTask({ title }: { title: string }): Promise<ITask[]> {
+async function createTask({
+  title,
+  deadline,
+}: {
+  title: string;
+  deadline: string | undefined;
+}): Promise<ITask[]> {
   try {
+    console.log(deadline);
     const response = await axios.post("/tasks", {
       title,
       isCompleted: false,
+      deadline: deadline ?? null,
     });
     return response.data;
   } catch (error) {

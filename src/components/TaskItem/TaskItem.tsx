@@ -9,6 +9,7 @@ import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { TaskService } from "../../api/task";
 import Item from "antd/es/list/Item";
 import { Socket } from "socket.io-client";
+import { format } from "date-fns";
 const { Text, Link, Paragraph } = Typography;
 
 type TaskItemProp = PropsWithChildren<{
@@ -73,41 +74,54 @@ function TaskItem(props: TaskItemProp) {
         {props.task.title}
       </Paragraph>
 
-      <div>
-        <span
-          className="icon"
-          onClick={() => {
-            setEditting(!editting);
-          }}
-        >
-          <AiFillEdit />
-        </span>
-        {!editting && (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "end",
+        }}
+      >
+        <div>
           <span
             className="icon"
             onClick={() => {
-              updateTaskMutation.mutate({
-                id: props.task.id,
-                title: props.task.title,
-                isCompleted: !props.task.isCompleted,
-              });
+              setEditting(!editting);
             }}
           >
-            <MdDone />
+            <AiFillEdit />
           </span>
-        )}
-        {!editting && (
-          <span
-            className="icon"
-            onClick={() => {
-              deleteTaskMutation.mutate({
-                id: props.task.id,
-              });
-            }}
-          >
-            <AiFillDelete />
-          </span>
-        )}
+          {!editting && (
+            <span
+              className="icon"
+              onClick={() => {
+                updateTaskMutation.mutate({
+                  id: props.task.id,
+                  title: props.task.title,
+                  isCompleted: !props.task.isCompleted,
+                });
+              }}
+            >
+              <MdDone />
+            </span>
+          )}
+          {!editting && (
+            <span
+              className="icon"
+              onClick={() => {
+                deleteTaskMutation.mutate({
+                  id: props.task.id,
+                });
+              }}
+            >
+              <AiFillDelete />
+            </span>
+          )}
+        </div>
+        <p>
+          {props.task.deadline
+            ? `End in ${format(Date.parse(props.task.deadline), "dd/MM/yyyy")}`
+            : ""}
+        </p>
       </div>
     </Card>
   );

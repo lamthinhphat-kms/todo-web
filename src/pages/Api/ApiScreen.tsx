@@ -1,4 +1,13 @@
-import { Button, Card, Collapse, Input, Space, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Collapse,
+  DatePicker,
+  DatePickerProps,
+  Input,
+  Space,
+  Typography,
+} from "antd";
 import React, { useContext, useEffect, useState } from "react";
 import "./styles.css";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
@@ -10,6 +19,7 @@ import jwtDecode from "jwt-decode";
 import { AuthContext } from "../../context/AuthContext";
 import { socket } from "../../socket/socket";
 import { ITask } from "../../models/ITask";
+import dayjs from "dayjs";
 
 function ApiScreen() {
   const [text, setText] = useState("");
@@ -21,6 +31,7 @@ function ApiScreen() {
   }>(userToken ?? "");
 
   const [taskList, setTaskList] = useState<ITask[]>([]);
+  const [dateJS, setDateJS] = useState<dayjs.Dayjs | null>(null);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -46,6 +57,10 @@ function ApiScreen() {
     };
   }, []);
 
+  const onChangeDate: DatePickerProps["onChange"] = (date, dateS) => {
+    setDateJS(date);
+  };
+
   const { data, isLoading } = useQuery({
     queryKey: ["tasks"],
     queryFn: TaskService.getTasks,
@@ -70,7 +85,9 @@ function ApiScreen() {
   const handleSubmit = () => {
     createTaskMutation.mutate({
       title: text,
+      deadline: dateJS?.toISOString(),
     });
+    setDateJS(null);
   };
 
   return (
@@ -90,6 +107,15 @@ function ApiScreen() {
             onPressEnter={handleSubmit}
             onChange={(e) => setText(e.target.value)}
           />
+          <DatePicker
+            onChange={onChangeDate}
+            format={"DD/MM/YYYY"}
+            value={dateJS}
+            disabledDate={(current) => {
+              return current && current < dayjs().endOf("day");
+            }}
+          />
+
           <Button size="large" type="primary" onClick={handleSubmit}>
             Add
           </Button>
